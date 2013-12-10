@@ -1,0 +1,97 @@
+package jp.co.wap.exam;					//Shreesh Mohan Verma IITR
+
+import java.util.List;
+import jp.co.wap.exam.lib.Interval;
+public class Problem1 {				
+			
+	public int getMaxIntervalOverlapCount(List<Interval> intervals){		// functions for max. overlapped intervals
+		
+		if(intervals==null){												//check for null and size=0
+			return 0;
+		}
+		else if(intervals.size()==0){
+			return 0;
+		}
+		int s=0,i=0,a=0,b=0,counter=0;							//counter- to count overlapped interval
+		int size=intervals.size();									//size of intervals list
+		int begin[]=new int[size],end[]=new int[size];		//begin-> start time array, end-> end time array 
+															// initializing begin, end array
+		for(i=0;i<size;i++){		
+			begin[i]= (intervals.get(i).getBeginHour()*60+intervals.get(i).getBeginMinute());
+			end[i]=intervals.get(i).getEndHour()*60+intervals.get(i).getEndMinute();
+			}
+		a=0;		// a is begin index, b is end array index
+	
+		merge_sort(begin,0,size-1,size);		//sort of both begin,end using mergesort
+		merge_sort(end,0,size-1,size);
+		
+		i=0;
+		while(i<(2*size)){
+			if(  a!=size && begin[a] <= end[b] ){
+				s++;	//s is sum of work schedule in a time interval		
+				a++;
+			}
+			else {
+				s--;
+				b++;
+				if(s==1){		// if interval is 1 after overlapping then counter of overlapped interval is increased	
+					counter++;
+					}
+				}			
+			i++;
+		}
+		return counter;
+	}
+	
+	public void merge_sort(int a[],int low,int high,int size)
+	{
+	 int mid;
+	 if(low<high)
+	 {
+	  mid=(low+high)/2;
+	  merge_sort(a,low,mid,size);
+	  merge_sort(a,mid+1,high,size);
+	  merge(a,low,mid,high,size);
+	 }
+	}
+	public void merge(int a[],int low,int mid,int high,int size)
+	{
+	 int h,i,j,k;
+	 int b[]=new int[50];
+	 h=low;
+	 i=low;
+	 j=mid+1;
+
+	 while((h<=mid)&&(j<=high))
+	 {
+	  if(a[h]<=a[j])
+	  {
+	   b[i]=a[h];
+	   h++;
+	  }
+	  else
+	  {
+	   b[i]=a[j];
+	   j++;
+	  }
+	  i++;
+	 }
+	 if(h>mid)
+	 {
+	  for(k=j;k<=high;k++)
+	  {
+	   b[i]=a[k];
+	   i++;
+	  }
+	 }
+	 else
+	 {
+	  for(k=h;k<=mid;k++)
+	  {
+	   b[i]=a[k];
+	   i++;
+	  }
+	 }
+	 for(k=low;k<=high;k++) a[k]=b[k];
+	}
+}
