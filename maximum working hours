@@ -1,0 +1,120 @@
+package jp.co.wap.exam;						//Shreesh Mohan Verma IITR
+
+import java.util.List;
+import jp.co.wap.exam.lib.Interval;
+
+public class Problem2 {
+		
+	public int getMaxWorkingTime(List<Interval> intervals){			// functions for max. working time
+		
+		if(intervals==null){
+			return 0;
+		}
+		else if(intervals.size()==0){
+			return 0;
+		}
+		int size=intervals.size();	
+		if(size>10000){
+			System.out.println("Number of Intervals should not exceed 10,000");
+		}
+		int duration = 0,i=0,j=0,t=0;
+		int begin[]=new int[size],end[]=new int[size];		//begin-> start time array, end-> end time array 
+		int sum[]=new int[size];
+	
+		for(i=0;i<size;i++){
+			begin[i]= (intervals.get(i).getBeginHour()*60+intervals.get(i).getBeginMinute());
+			end[i]=intervals.get(i).getEndHour()*60+intervals.get(i).getEndMinute();
+			}
+		merge_sort(end,begin,0,size-1,size);
+		
+		sum[0]=end[0]-begin[0]; //first interval time
+		for(i=1;i<size;i++)
+		{
+			for(j=i-1;j>=0;j--)
+			{
+				duration=end[i]-begin[i];
+				if(end[j]<begin[i])					// if not overlapped then sum of non-overlapped intervals sum upto interval i
+				{
+					t=max((sum[j]+duration),sum[i-1]);
+					if(t>sum[i]) sum[i]=t;
+					//System.out.println("1 i= "+i+" duration="+duration+" begin="+begin[i]+" end="+end[i]+" sum="+sum[i]+ " j="+j);
+					
+				}
+				else{				//for case of overlapped sum i= max(duration of current interval+ sum till previous interval)  
+					t=max(duration,sum[i-1]);
+					if(t>sum[i]) sum[i]=t;
+					//System.out.println("2 i= "+i+" duration="+duration+" begin="+begin[i]+" end="+end[i]+" sum="+sum[i]+ " j="+j);
+				}
+					
+			}
+		}
+	
+		return sum[size-1];
+	}
+	public int max(int a, int b) {		// for max of the two
+		if(a>b)
+			return a;
+		else
+			return b;
+		
+	}
+	public void merge_sort(int a[],int c[],int low,int high,int size)
+	{
+	 int mid;
+	
+	 if(low<high)
+	 {
+	  mid=(low+high)/2;
+	  merge_sort(a,c,low,mid,size);
+	  merge_sort(a,c,mid+1,high,size);
+	  merge(a,c,low,mid,high,size);
+	 }
+	}
+	public void merge(int a[],int c[],int low,int mid,int high,int size)
+	{
+	 int h,i,j,k;
+	 int b[]=new int[50];
+	 int d[]=new int[50];
+	 h=low;
+	 i=low;
+	 j=mid+1;
+
+	 while((h<=mid)&&(j<=high))
+	 {
+	  if(a[h]<=a[j])
+	  {
+	   b[i]=a[h];
+	   d[i]=c[h];
+	   h++;
+	  }
+	  else
+	  {
+	   b[i]=a[j];
+	   d[i]=c[j];
+	   j++;
+	  }
+	  i++;
+	 }
+	 if(h>mid)
+	 {
+	  for(k=j;k<=high;k++)
+	  {
+	   b[i]=a[k];
+	   d[i]=c[k];
+	   i++;
+	  }
+	 }
+	 else
+	 {
+	  for(k=h;k<=mid;k++)
+	  {
+	   b[i]=a[k];
+	   d[i]=c[k];
+	   i++;
+	  }
+	 }
+	 for(k=low;k<=high;k++){ a[k]=b[k];
+	 c[k]=d[k];}
+	}
+	
+}
