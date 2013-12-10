@@ -1,0 +1,73 @@
+package jp.co.wap.exam;					//Shreesh Mohan Verma IITR
+
+import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PersistentQueue<E> {
+
+	private int size;				// for storing size of queue
+	private  Node<E> start;			// for storing start address
+	private  Node<E> end;			// for storing end address
+	
+	
+	private class Node<E> {				// Node class for creating node objects for linkedlist queue formation
+		private final E element;		// for storing element of node
+		private Node<E> next;		// for storing next address of node
+
+		public Node(E element) {		// Constructor for node class
+			this.element = element;
+		}
+	}		// Node class ends
+		
+	public PersistentQueue(int size, Node<E> element) {				//Constructor if no element in queue
+		this(size, element, element);
+	}
+	
+	public PersistentQueue(int size, Node<E> start, Node<E> end) {		//Constructor 
+		this.start = start;
+		this.end = end;
+		this.size = size;
+	}
+
+	public PersistentQueue() {
+		this(0, null);
+	}
+
+	public PersistentQueue<E> enqueue(E e) {
+		PersistentQueue<E> queue;
+		if(e==null) {
+			throw new IllegalArgumentException();
+		}
+		Node<E> newLink = new Node<E>(e);
+		if (size==0) {
+			start=end=newLink;					
+			queue = new PersistentQueue<E>(size+1, newLink);
+		}
+		else {
+			end.next=newLink;			
+			queue = new PersistentQueue<E>(size+1, start, newLink);
+		}
+		return queue;
+	}
+
+	public PersistentQueue<E> dequeue() {
+		PersistentQueue<E> queue;
+		if (start == null) {	throw new NoSuchElementException();
+		}
+		else if (start == end) {	queue = new PersistentQueue<E>();
+		}
+		else {	queue = new PersistentQueue<E>(size-1, start.next, end);
+		}
+		return queue;
+	}
+
+	public E peek() {
+		if(start==null) {	throw new NoSuchElementException();
+		}
+		return start.element;
+	}
+	
+	public int size() {		return size;	}	
+			
+}
